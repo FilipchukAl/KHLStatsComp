@@ -1,7 +1,21 @@
 from bs4 import BeautifulSoup
 import requests
+# ---filipchuk.al 24.11.2025---
+# Добавил библеотеку curl_cffi для обхода блокировок сайта
+from curl_cffi import requests
+# -----------------------------
 from collections import namedtuple, Counter
 import pickle as pkl
+
+# ---filipchuk.al 24.11.2025---
+# Настроил Django окружение и добавил путь к проекту для корректного импорта модулей
+import os
+import sys
+import django
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'backend.settings')
+django.setup()
+# -----------------------------
 
 class GameFields:
     GAME_ID = 'game_id'
@@ -52,6 +66,8 @@ BETTER = {
     'ШМ': 'more',
     'ВПМ': 'less',
     'ВПМ/И': 'less',
+    # Добавились Отборы шайбы
+    # 'ОТБ': 'more'
 }
 
 
@@ -87,7 +103,11 @@ def parse_future_games_day(games_day_doc):
     return result
 
 def parse_calendar():
-    response = requests.get('https://www.khl.ru/calendar/')
+    # ---filipchuk.al 24.11.2025---
+    # Заменил requests на curl_cffi для обхода блокировок сайта
+    # response = requests.get('https://www.khl.ru/calendar/')
+    response = requests.get('https://www.khl.ru/calendar/', impersonate="chrome136", timeout=10)
+    # -----------------------------
     if not response.status_code == 200:
         return []
     doc = response.text
@@ -102,7 +122,11 @@ def parse_calendar():
 
 
 def parse_clubs():
-    response = requests.get('https://www.khl.ru/clubs/')
+    # ---filipchuk.al 24.11.2025---
+    # Заменил requests на curl_cffi для обхода блокировок сайта
+    # response = requests.get('https://www.khl.ru/clubs/')
+    response = requests.get('https://www.khl.ru/clubs/', impersonate="chrome136", timeout=10)
+    # -----------------------------
     if not response.status_code == 200:
         return []
     doc = response.text
@@ -116,7 +140,11 @@ def parse_clubs():
 
 
 def parse_table(address, need_pos=True):
-    response = requests.get(address)
+    # ---filipchuk.al 24.11.2025---
+    # Заменил requests на curl_cffi для обхода блокировок сайта
+    # response = requests.get(address)
+    response = requests.get(address, impersonate="chrome136", timeout=10)
+    # -----------------------------
     if not response.status_code == 200:
         return []
     doc = response.text
@@ -151,7 +179,10 @@ def parse_table(address, need_pos=True):
                 'key': alias,
                 'value': value,
                 'name': name,
-                'better': BETTER[alias]
+                # ---filipchuk.al 24.11.2025---
+                # Изменил BETTER.get добавление нового элемента в словарь не крашит приложение
+                'better': BETTER.get(alias, None)
+                # -----------------------------
             })
 
         result[club] = stats

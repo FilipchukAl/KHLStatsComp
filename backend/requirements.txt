@@ -3,3 +3,4 @@ requests==2.28.1
 beautifulsoup4==4.11.1
 redis==4.4.0
 django-cors-headers==3.13.0
+curl_cffi==0.13.0

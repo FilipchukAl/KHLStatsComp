@@ -9,7 +9,11 @@ import Instructor from './Instructor';
 
 class MainPage extends React.Component{
   renderComparator = () => {
-    if (this.props['left_team'] === null || this.props['team_id'] === null) {
+    //  ---filipchuk.al 24.11.2025---
+    //  Упрощено условие: вместо сравнения с null проверяется значения на пустоту через отрицание (!)
+    // if (this.props['left_team'] === null || this.props['team_id'] === null) {
+    if (!this.props.left_team || !this.props.right_team) {
+    //  -----------------------------
       return <Instructor/>
     }
     return (

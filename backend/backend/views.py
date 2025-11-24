@@ -85,10 +85,25 @@ def clubs_compare(request):
     update_db()
     club1 = request.GET.get('left_team')
     club2 = request.GET.get('right_team')
+
+    # ---filipchuk.al 24.11.2025---
+    # Добавлена проверка на отсутствие параметров и автоматическое добавление слэша к названию команды
+    #if not club1.endswith('/'):
+    #   club1 = club1 + '/'
+    # if not club2.endswith('/'):
+    #   club2 = club2 + '/'
+    if not club1 or not club2:
+        return JsonResponse(
+            {"error": "Parameters 'left_team' and 'right_team' are required."},
+            status=400
+        )
+
+    # Добавляем слэш, если нет
     if not club1.endswith('/'):
-        club1 = club1 + '/'
+        club1 += '/'
     if not club2.endswith('/'):
-        club2 = club2 + '/'
+        club2 += '/'
+    # -----------------------------
 
     clubs = redis_get_json(DataBaseKeys.CLUBS)
 
@@ -122,10 +137,17 @@ def clubs_compare(request):
             period_3,
             powerplay
         ]
-    ):
+    ):  
+        # ---filipchuk.al 24.11.2025---
+        # Используем .get() для безопасного получения данных без ошибок при отсутствии ключа
+        #result[key] = {
+        #   'left_team': value[club1],
+        #   'right_team': value[club2]
+        #}
         result[key] = {
-            'left_team': value[club1],
-            'right_team': value[club2]
+            'left_team': value.get(club1),
+            'right_team': value.get(club2)
         }
+        # -----------------------------
 
     return JsonResponse(result)

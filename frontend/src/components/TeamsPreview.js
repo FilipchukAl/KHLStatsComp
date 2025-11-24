@@ -3,64 +3,42 @@ import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 import { connect } from 'react-redux';
 
+//  ---filipchuk.al 24.11.2025---
+// Добавлена проверка формата logo: если путь уже абсолютный (http/https), используем его, иначе подставляем домен khl.ru
 const renderLogoName = (team) => {
-  let image = 'http://khl.ru/' + team['logo'];
-
+  // Если logo начинается с 'http' или '//', оставляем как есть
+  let image = team['logo'].startsWith('http') || team['logo'].startsWith('//')
+    ? team['logo'].replace(/^\/+/, 'https://')  // меняем // на https://
+    : 'http://khl.ru/' + team['logo'];
 
   return (
-  <Stack
-        direction='column'
-        style={{
-          width: '40%'
-        }}
-    >
+    <Stack direction='column' style={{ width: '40%' }}>
       <Box
         style={{
           width: '100%',
           height: '100%',
+          display: 'flex',
           alignItems: 'center',
           flexWrap: 'wrap',
-          display: 'flex',
         }}
         justifyContent='center'
       >
         <img 
           src={image}
-          style={{
-            width: '18vh',
-            height: '18vh',
-            alignItems: 'center',
-            flexWrap: 'wrap',
-            display: 'flex',
-          }}
+          style={{ width: '18vh', height: '18vh' }}
           alt={team['name']}
         />
       </Box>
-      <Box 
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          fontSize: 18
-        }} 
-        justifyContent='center'
-      >
+      <Box style={{ display: 'flex', alignItems: 'center', fontSize: 18 }} justifyContent='center'>
         {team['team']}
       </Box>
-      <Box
-        style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          alignItems: 'center',
-          fontSize: 12
-        }}
-        justifyContent='center'
-      >
+      <Box style={{ display: 'flex', alignItems: 'center', fontSize: 12 }} justifyContent='center'>
         {team['city']}
       </Box>
-    </Stack>    
+    </Stack>
   )
 }
+//  -----------------------------
 
 class TeamsPreview extends React.Component {
   getColor = (stats_0, stats_1) => {

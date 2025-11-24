@@ -121,9 +121,14 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# ---filipchuk.al 24.11.2025---
+# Добавлены localhost и 127.0.0.1 в ALLOWED_HOSTS для работы сервера по разным локальным адресам
 ALLOWED_HOSTS = [
-    '0.0.0.0'
+    '0.0.0.0',
+    'localhost',
+    '127.0.0.1'
 ]
+# -----------------------------
 
 CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
